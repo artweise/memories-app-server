@@ -8,10 +8,18 @@ const familySchema = new Schema(
       required: [true, "Give a title of your group"],
       unique: true,
     },
+    description: {
+      type: String,
+      trim: true,
+    },
+    avatarUrl: {
+      type: String,
+      default: "images/default-avatar.png",
+    },
+    // tags should be unique, but the validation should be in the create moment
     tags: [
       {
         type: String,
-        unique: true,
       },
     ],
   },
