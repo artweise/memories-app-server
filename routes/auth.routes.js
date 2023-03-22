@@ -58,18 +58,23 @@ router.post("/signup", (req, res, next) => {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      return User.create({
+        email,
+        password: hashedPassword,
+        name,
+        families: [],
+      });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { email, name, _id } = createdUser;
+      const { email, name, _id, families } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { email, name, _id };
+      const user = { email, name, _id, families };
 
       // Send a json response containing the user object
-      res.status(201).json({ user: user });
+      res.status(201).json(user);
     })
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
@@ -110,7 +115,7 @@ router.post("/login", (req, res, next) => {
         });
 
         // Send the token as the response
-        res.status(200).json({ authToken: authToken });
+        res.status(200).json({ authToken: authToken, _id, email, name });
       } else {
         res.status(401).json({ message: "Unable to authenticate the user" });
       }
