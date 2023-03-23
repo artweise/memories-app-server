@@ -3,62 +3,38 @@ const Family = require("../models/Family.model");
 const User = require("../models/User.model");
 const mongoose = require("mongoose");
 
-// POST /api/families  -  Creates a new family
-// and add the ID from this created family to the array of families of the user
-router.post("/families", (req, res, next) => {
-  const { title, description, userId } = req.body;
-  let createdFamily;
-  // Create a new family with the information from req.body
-  Family.create({ title, description })
+router.post("/families", async (req, res, next) => {
+  const { title, description, userId, members } = req.body;
 
-    // VALIDATION UNIQUE TITLE OF THE FAMILY!!!
-
-    .then((newFamily) => {
-      // Save created family to the db
-      createdFamily = newFamily;
-      //   console.log("Created family -> ", createdFamily);
-      //   console.log("User ID -> ", userId);
-      return User.findById(userId);
-    })
-    .then((foundedUser) => {
-      // Find the user in db using the userId
-      //   User.findById(userId);
-      // Add the createdFamilyId to the user's families array
-      foundedUser.families.push(createdFamily._id);
-      // Save the updated user object to the database
-      foundedUser.save();
-      // Return a new family object
-      //   ADD A SUCCESS MESSAGE ON THE FRONTEND!!!
-      res.status(201).json(createdFamily);
-    })
-    // Return an error message if something goes wrong
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ message: error.message });
+  try {
+    // Find all the user IDs for the members in the members array
+    const memberIds = await Promise.all(
+      members.map(async (email) => {
+        const foundedUser = await User.findOne({ email });
+        // Check the users collection if a user with the member's email already exists
+        if (!foundedUser) {
+          res
+            .status(400)
+            .json({ message: `User with email ${email} not found` });
+          //   throw new Error(`User with email ${email} not found`);
+        }
+        return foundedUser._id;
+      })
+    );
+    // Add the current user's ID to the memberIds array
+    memberIds.push(userId);
+    // Create a new family with the information from req.body
+    const newFamily = await Family.create({
+      title,
+      description,
+      members: memberIds,
     });
+    res.status(201).json(newFamily);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 });
-
-// router.post("/families", async (req, res, next) => {
-//   try {
-//     const { title, description, userId } = req.body;
-//     // Create a new family
-//     const newFamily = new Family({ title, description });
-//     // Save created family to the db
-//     const savedFamily = await newFamily.save();
-//     // Find the user in the database using the userId
-//     const foundedUser = await User.findById(userId);
-//     // Add the savedFamilyId to the user's families array
-//     foundedUser.families.push(savedFamily._id);
-//     // Save the updated user object to the database
-//     await foundedUser.save();
-//     // Return a success message /and the new family object
-//     res.status(201).json(savedFamily);
-//   } catch (error) {
-//     // Return an error message if something goes wrong
-//     console.log(error);
-//     res.status(500).json({ message: error.message });
-//   }
-// });
 
 // GET /api/families  -  Get all families (groups of people)
 router.get("/families", (req, res, next) => {

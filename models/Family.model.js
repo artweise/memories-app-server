@@ -16,6 +16,12 @@ const familySchema = new Schema(
       type: String,
       default: "images/default-avatar.png",
     },
+    members: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     // tags should be unique, but the validation should be in the create moment
     tags: [
       {
