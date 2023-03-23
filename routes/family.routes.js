@@ -2,14 +2,33 @@ const router = require("express").Router();
 const Family = require("../models/Family.model");
 const User = require("../models/User.model");
 const mongoose = require("mongoose");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-router.post("/families", async (req, res, next) => {
-  const { title, description, userId, members } = req.body;
+router.post("/families", isAuthenticated, async (req, res, next) => {
+  let { title, description, members } = req.body;
+
+  const { email } = req.payload;
+
+  // Check if the required fields are provided
+  if (!title) {
+    return res.status(400).json({
+      message: "Please provide the title of the family. It should be unique",
+    });
+    //   throw new Error(`The field "title" is not provided`);
+  }
+
+  // Check if the members array exists
+  if (!members) {
+    members = [];
+  }
+
+  // Add the current user email to the members array
+  members.push(email);
 
   try {
     // Find all the user IDs for the members in the members array
     const memberIds = await Promise.all(
-      members.map(async (email) => {
+      members?.map(async (email) => {
         const foundedUser = await User.findOne({ email });
         // Check the users collection if a user with the member's email already exists
         if (!foundedUser) {
@@ -21,8 +40,8 @@ router.post("/families", async (req, res, next) => {
         return foundedUser._id;
       })
     );
-    // Add the current user's ID to the memberIds array
-    memberIds.push(userId);
+    // console.log(memberIds);
+
     // Create a new family with the information from req.body
     const newFamily = await Family.create({
       title,
@@ -32,7 +51,15 @@ router.post("/families", async (req, res, next) => {
     res.status(201).json(newFamily);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: error.message });
+    //   Check if the title is already in use by this user
+    if (error.code === 11000 && error.keyPattern.title === 1) {
+      return res.status(400).json({
+        message: `${title} is already in use. Please provide another title`,
+      });
+      //   throw new Error(`${title} is already in use. Please provide another title`);
+    } else {
+      next(error);
+    }
   }
 });
 
