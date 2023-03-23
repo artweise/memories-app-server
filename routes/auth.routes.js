@@ -58,7 +58,11 @@ router.post("/signup", (req, res, next) => {
 
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
-      return User.create({ email, password: hashedPassword, name });
+      return User.create({
+        email,
+        password: hashedPassword,
+        name,
+      });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
@@ -69,7 +73,7 @@ router.post("/signup", (req, res, next) => {
       const user = { email, name, _id };
 
       // Send a json response containing the user object
-      res.status(201).json({ user: user });
+      res.status(201).json(user);
     })
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
@@ -110,7 +114,7 @@ router.post("/login", (req, res, next) => {
         });
 
         // Send the token as the response
-        res.status(200).json({ authToken: authToken });
+        res.status(200).json({ authToken: authToken, _id, email, name });
       } else {
         res.status(401).json({ message: "Unable to authenticate the user" });
       }

@@ -19,12 +19,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Password is required."],
     },
-    families: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Family",
-      },
-    ],
+    // families: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Family",
+    //   },
+    // ],
   },
   {
     timestamps: true,
