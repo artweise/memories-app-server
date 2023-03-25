@@ -64,8 +64,11 @@ router.post("/families", isAuthenticated, async (req, res, next) => {
 });
 
 // GET /api/families  -  Get all families (groups of people)
-router.get("/families", (req, res, next) => {
-  Family.find()
+router.get("/families/:userId", isAuthenticated, (req, res, next) => {
+  const { userId } = req.params;
+  Family.find({
+    members: { $in: [userId] },
+  })
     .then((allFamilies) => {
       res.json(allFamilies);
     })
