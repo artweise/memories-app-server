@@ -26,6 +26,11 @@ const memorySchema = new Schema(
       ref: "Family",
       required: true,
     },
+    imageUrl: [
+      {
+        type: String,
+      },
+    ],
   },
   {
     timestamps: true,
