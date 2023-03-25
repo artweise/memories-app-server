@@ -4,7 +4,8 @@ const User = require("../models/User.model");
 const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-router.post("/families", isAuthenticated, async (req, res, next) => {
+// POST /api/family  -  Create a new family
+router.post("/family", isAuthenticated, async (req, res, next) => {
   let { title, description, members } = req.body;
 
   const { email } = req.payload;
@@ -63,25 +64,29 @@ router.post("/families", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// GET /api/families  -  Get all families (groups of people)
-router.get("/families/:userId", isAuthenticated, (req, res, next) => {
-  const { userId } = req.params;
-  Family.find({
-    members: { $in: [userId] },
-  })
-    .then((allFamilies) => {
-      res.json(allFamilies);
-    })
-    .catch((error) => console.log(error));
+// POST /api/families  -  Get all families
+router.post("/families", isAuthenticated, async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    const allFamilies = await Family.find({
+      members: { $in: [userId] },
+    });
+
+    res.json(allFamilies);
+  } catch (error) {
+    (error) => console.log(error);
+  }
 });
 
 // GET /api/families/:familyId -  Get single family
-router.get("/families/:familyId", (req, res, next) => {
-  Family.findById(req.params.familyId)
-    .then((singleFamily) => {
-      res.json(singleFamily);
-    })
-    .catch((error) => console.log(error));
+router.get("/families/:familyId", isAuthenticated, async (req, res) => {
+  try {
+    const singleFamily = await Family.findById(req.params.familyId);
+    res.json(singleFamily);
+  } catch (error) {
+    (error) => console.log(error);
+  }
 });
 
 module.exports = router;
