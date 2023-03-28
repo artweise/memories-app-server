@@ -12,7 +12,7 @@ const familySchema = new Schema(
       type: String,
       trim: true,
     },
-    avatarUrl: {
+    avatar: {
       type: String,
       default: "images/default-avatar.png",
     },

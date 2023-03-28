@@ -21,11 +21,16 @@ const memorySchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    family: {
+    familyId: {
       type: Schema.Types.ObjectId,
       ref: "Family",
       required: true,
     },
+    images: [
+      {
+        type: String,
+      },
+    ],
   },
   {
     timestamps: true,
