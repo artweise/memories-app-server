@@ -64,9 +64,9 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
   }
 });
 
-// POST /api/families  -  Get all families
-router.post("/families", isAuthenticated, async (req, res) => {
-  const { userId } = req.body;
+// GET /api/families  -  Get all families
+router.get("/families", isAuthenticated, async (req, res) => {
+  const userId = req.payload._id;
 
   try {
     const allFamilies = await Family.find({

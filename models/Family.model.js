@@ -12,9 +12,9 @@ const familySchema = new Schema(
       type: String,
       trim: true,
     },
-    avatar: {
+    color: {
       type: String,
-      default: "images/default-avatar.png",
+      default: "#DFE9F5",
     },
     members: [
       {
