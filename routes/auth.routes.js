@@ -56,8 +56,6 @@ router.post("/signup", (req, res, next) => {
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
 
-      console.log("Where is user?");
-
       // Create the new user in the database
       // We return a pending promise, which allows us to chain another `then`
       return User.create({
@@ -115,9 +113,13 @@ router.post("/login", (req, res, next) => {
         });
 
         // Send the token as the response
-        res
-          .status(200)
-          .json({ accessToken: accessToken, _id, email, username });
+        res.status(200).json({
+          accessToken: accessToken,
+          _id,
+          email,
+          username,
+          message: "Logged in successfully",
+        });
       } else {
         res.status(401).json({ message: "Unable to authenticate the user" });
       }
