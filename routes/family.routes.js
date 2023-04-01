@@ -15,7 +15,6 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
     return res.status(400).json({
       message: "Please provide the title of the family.",
     });
-    //   throw new Error(`The field "title" is not provided`);
   }
 
   // Check if the members array exists
@@ -36,7 +35,6 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
           res
             .status(400)
             .json({ message: `User with email ${email} not found` });
-          //   throw new Error(`User with email ${email} not found`);
         }
         return foundedUser._id;
       })
@@ -57,7 +55,6 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
       return res.status(400).json({
         message: `${title} is already in use. Please provide another title`,
       });
-      //   throw new Error(`${title} is already in use. Please provide another title`);
     } else {
       next(error);
     }
