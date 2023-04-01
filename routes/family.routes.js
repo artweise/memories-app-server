@@ -13,7 +13,7 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
   // Check if the required fields are provided
   if (!title) {
     return res.status(400).json({
-      message: "Please provide the title of the family. It should be unique",
+      message: "Please provide the title of the family.",
     });
     //   throw new Error(`The field "title" is not provided`);
   }

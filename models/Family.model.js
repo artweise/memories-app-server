@@ -5,16 +5,11 @@ const familySchema = new Schema(
     title: {
       type: String,
       trim: true,
-      required: [true, "Give a title of your group"],
-      unique: true,
+      required: [true, "Give a title of your family"],
     },
     description: {
       type: String,
       trim: true,
-    },
-    color: {
-      type: String,
-      default: "#DFE9F5",
     },
     members: [
       {

@@ -8,9 +8,9 @@ module.exports = (app) => {
     // always logs the error
     console.error("ERROR", req.method, req.path, err);
 
-    // expired token 
+    // expired token
     if (err.name === "UnauthorizedError" && !res.headersSent) {
-      res.status(401).json({ message: "invalid token..." });
+      res.status(401).json({ message: "Invalid token..." });
     }
 
     // only render if the error ocurred before sending the response
