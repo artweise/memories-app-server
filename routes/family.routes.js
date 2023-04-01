@@ -68,7 +68,7 @@ router.get("/families", isAuthenticated, async (req, res) => {
   try {
     const allFamilies = await Family.find({
       members: { $in: [userId] },
-    });
+    }).populate("members");
 
     res.json(allFamilies);
   } catch (error) {
