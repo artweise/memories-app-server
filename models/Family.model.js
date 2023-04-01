@@ -11,6 +11,10 @@ const familySchema = new Schema(
       type: String,
       trim: true,
     },
+    color: {
+      type: String,
+      default: "#7DCBAA",
+    },
     members: [
       {
         type: Schema.Types.ObjectId,
