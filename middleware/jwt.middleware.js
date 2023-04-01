@@ -6,6 +6,12 @@ const isAuthenticated = jwt({
   algorithms: ["HS256"],
   requestProperty: "payload",
   getToken: getTokenFromHeaders,
+  onExpired: async (req, err) => {
+    if (new Date() - err.inner.expiredAt < 5000) {
+      return;
+    }
+    throw err;
+  },
 });
 
 // Function used to extract the JWT token from the request's 'Authorization' Headers
