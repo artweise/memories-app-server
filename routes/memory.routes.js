@@ -8,14 +8,15 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 //  POST /api/memory  -  Creates a new memory in the family collection
 router.post("/memory", isAuthenticated, async (req, res) => {
-  const { publication, date, place, tags, family: familyId, userId } = req.body;
+  const userId = req.payload._id;
+  const { publication, date, place, tags, familyId } = req.body;
 
   Memory.create({
     publication,
     date: new Date(),
     place,
     tags,
-    family: familyId,
+    familyId,
     owner: userId,
   })
     .then((newMemory) => {
@@ -44,11 +45,11 @@ router.post("/upload", fileUploader.single("images"), (req, res, next) => {
 
 // POST /api/memories  -  Get all memories in the family collection
 router.post("/memories", isAuthenticated, async (req, res) => {
-  const { family: familyId } = req.body;
+  const { familyId } = req.body;
 
   // Find all memories in the family collection
   try {
-    const memories = await Memory.find({ family: familyId });
+    const memories = await Memory.find({ familyId });
     res.status(200).json(memories);
   } catch (error) {
     console.log(error);
