@@ -13,10 +13,10 @@ router.post("/memory", isAuthenticated, async (req, res) => {
 
   Memory.create({
     publication,
-    date: new Date(),
+    date: new Date(date),
     place,
     tags,
-    familyId,
+    family: familyId,
     owner: userId,
   })
     .then((newMemory) => {
@@ -49,7 +49,7 @@ router.post("/memories", isAuthenticated, async (req, res) => {
 
   // Find all memories in the family collection
   try {
-    const memories = await Memory.find({ familyId });
+    const memories = await Memory.find({ family: familyId }).populate("family");
     res.status(200).json(memories);
   } catch (error) {
     console.log(error);
@@ -74,7 +74,7 @@ router.get("/memory/:memoryId", isAuthenticated, async (req, res) => {
 router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
   const { memoryId } = req.params;
   // const { data } = req.body;
-  const { publication, date, place, tags, family: familyId, userId } = req.body;
+  const { publication, date, place, tags, familyId, userId } = req.body;
 
   // if (!data) {
   //   res.status(400).json({ message: "Missing data in request body" });
