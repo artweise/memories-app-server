@@ -9,7 +9,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 //  POST /api/memory  -  Creates a new memory in the family collection
 router.post("/memory", isAuthenticated, async (req, res) => {
   const userId = req.payload._id;
-  const { publication, date, place, tags, familyId } = req.body;
+  const { publication, date, place, isPrivate, tags, familyId } = req.body;
 
   Memory.create({
     publication,
@@ -17,7 +17,7 @@ router.post("/memory", isAuthenticated, async (req, res) => {
     place,
     tags,
     family: familyId,
-    owner: userId,
+    owner: isPrivate && userId,
   })
     .then((newMemory) => {
       res.status(200).json(newMemory);
