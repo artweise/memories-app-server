@@ -9,9 +9,11 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 //  POST /api/memory  -  Creates a new memory in the family collection
 router.post("/memory", isAuthenticated, async (req, res) => {
   const userId = req.payload._id;
-  const { publication, date, place, isPrivate, tags, familyId } = req.body;
+  const { title, publication, date, place, isPrivate, tags, familyId } =
+    req.body;
 
   Memory.create({
+    title,
     publication,
     date: new Date(date),
     place,
@@ -74,7 +76,7 @@ router.get("/memory/:memoryId", isAuthenticated, async (req, res) => {
 router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
   const { memoryId } = req.params;
   // const { data } = req.body;
-  const { publication, date, place, tags, familyId, userId } = req.body;
+  const { title, publication, date, place, tags, familyId, userId } = req.body;
 
   // if (!data) {
   //   res.status(400).json({ message: "Missing data in request body" });
@@ -85,7 +87,7 @@ router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
   try {
     const updatedMemory = await Memory.findByIdAndUpdate(
       memoryId,
-      { publication, date, place, tags, family: familyId, userId },
+      { title, publication, date, place, tags, family: familyId, userId },
       // data,
       {
         new: true,

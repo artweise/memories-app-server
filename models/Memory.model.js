@@ -2,6 +2,10 @@ const { Schema, model } = require("mongoose");
 
 const memorySchema = new Schema(
   {
+    title: {
+      type: String,
+      trim: false,
+    },
     publication: {
       type: String,
       trim: false,
