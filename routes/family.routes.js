@@ -51,13 +51,13 @@ router.post("/family", isAuthenticated, async (req, res, next) => {
   } catch (error) {
     console.log(error);
     //   Check if the title is already in use by this user
-    if (error.code === 11000 && error.keyPattern.title === 1) {
-      return res.status(400).json({
-        message: `${title} is already in use. Please provide another title`,
-      });
-    } else {
-      next(error);
-    }
+    // if (error.code === 11000 && error.keyPattern.title === 1) {
+    //   return res.status(400).json({
+    //     message: `${title} is already in use. Please provide another title`,
+    //   });
+    // } else {
+    //   next(error);
+    // }
   }
 });
 

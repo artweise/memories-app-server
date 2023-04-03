@@ -21,7 +21,7 @@ const memorySchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    familyId: {
+    family: {
       type: Schema.Types.ObjectId,
       ref: "Family",
       required: true,
