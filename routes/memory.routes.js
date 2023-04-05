@@ -12,15 +12,19 @@ router.post("/memory", isAuthenticated, async (req, res) => {
   const { title, publication, date, place, isPrivate, tags, familyId } =
     req.body;
 
-  Memory.create({
+  const memoryToCreate = {
     title,
     publication,
     date: new Date(date),
     place,
     tags,
-    family: familyId,
-    owner: isPrivate && userId,
-  })
+    family: mongoose.Types.ObjectId(familyId),
+  };
+  if (isPrivate) {
+    memoryToCreate.owner = userId;
+  }
+
+  Memory.create(memoryToCreate)
     .then((newMemory) => {
       res.status(200).json(newMemory);
     })
