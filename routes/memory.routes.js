@@ -13,13 +13,15 @@ router.post("/memory", isAuthenticated, async (req, res) => {
   const { title, publication, date, place, isPrivate, tags, familyId } =
     req.body;
 
+  const familyObjectId = new ObjectId(familyId);
+
   const memoryToCreate = {
     title,
     publication,
     date: new Date(date),
     place,
     tags,
-    family: ObjectId(familyId),
+    family: familyObjectId,
   };
   if (isPrivate) {
     memoryToCreate.owner = userId;
