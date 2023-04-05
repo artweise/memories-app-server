@@ -2,6 +2,7 @@ const router = require("express").Router();
 const Family = require("../models/Family.model");
 const Memory = require("../models/Memory.model");
 const mongoose = require("mongoose");
+const { ObjectId } = require("mongodb");
 const fileUploader = require("../config/cloudinary.config");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
@@ -18,7 +19,7 @@ router.post("/memory", isAuthenticated, async (req, res) => {
     date: new Date(date),
     place,
     tags,
-    family: mongoose.Types.ObjectId(familyId),
+    family: ObjectId(familyId),
   };
   if (isPrivate) {
     memoryToCreate.owner = userId;
