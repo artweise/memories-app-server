@@ -82,25 +82,36 @@ router.get("/memory/:memoryId", isAuthenticated, async (req, res) => {
 
 // POST /api/memory/:memoryId  -  Edit memory details
 router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
+  const userId = req.payload._id;
   const { memoryId } = req.params;
-  // const { data } = req.body;
-  const { title, publication, date, place, tags, familyId, userId } = req.body;
 
-  // if (!data) {
-  //   res.status(400).json({ message: "Missing data in request body" });
-  //   return;
-  // }
-  // const { publication, date, place, tags, family: familyId, userId } = data;
+  const { title, publication, date, place, isPrivate, tags, familyId } =
+    req.body;
+
+  const familyObjectId = new ObjectId(familyId);
+
+  const memoryData = {
+    title,
+    publication,
+    date: new Date(date),
+    place,
+    tags,
+    family: familyObjectId,
+    updatedBy: userId,
+    // When using findByIdAndUpdate in Mongoose, you can delete a key based on a condition by using the $unset operator in your update object.
+    $unset: {},
+  };
+  if (isPrivate) {
+    memoryData.owner = userId;
+  } else {
+    // If isPrivate is false, delete the 'owner' field from the document
+    memoryData.$unset.owner = "";
+  }
 
   try {
-    const updatedMemory = await Memory.findByIdAndUpdate(
-      memoryId,
-      { title, publication, date, place, tags, family: familyId, userId },
-      // data,
-      {
-        new: true,
-      }
-    );
+    const updatedMemory = await Memory.findByIdAndUpdate(memoryId, memoryData, {
+      new: true,
+    });
     res.status(200).json(updatedMemory);
   } catch (error) {
     console.log("Error occured while editing your memory: " + error);
