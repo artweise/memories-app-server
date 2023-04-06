@@ -22,6 +22,7 @@ router.post("/memory", isAuthenticated, async (req, res) => {
     place,
     tags,
     family: familyObjectId,
+    createdBy: userId,
   };
   if (isPrivate) {
     memoryToCreate.owner = userId;

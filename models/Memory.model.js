@@ -25,6 +25,10 @@ const memorySchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     family: {
       type: Schema.Types.ObjectId,
       ref: "Family",
