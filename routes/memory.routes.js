@@ -7,11 +7,46 @@ const fileUploader = require("../config/cloudinary.config");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
+// POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+router.post("/upload", fileUploader.single("gallery"), (req, res, next) => {
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  // Get the URL of the uploaded file and send it as a response.
+  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+
+  res.json({ fileUrl: req.file.path });
+});
+
+// POST /api/upload => Route that receives IMAGES, sends it to Cloudinary via the fileUploader and returns the image URL
+// router.post("/upload", fileUploader.array("gallery", 10), (req, res, next) => {
+//   if (!req.files) {
+//     next(new Error("No file uploaded!"));
+//     return;
+//   }
+//   console.log("files are: ", req.files);
+
+//   const fileUrls = req.files.map((file) => file.path);
+//   // Get the URL of the uploaded file and send it as a response.
+//   // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+
+//   res.json({ fileUrls });
+// });
+
 //  POST /api/memory  -  Creates a new memory in the family collection
 router.post("/memory", isAuthenticated, async (req, res) => {
   const userId = req.payload._id;
-  const { title, publication, date, place, isPrivate, tags, familyId } =
-    req.body;
+  const {
+    title,
+    publication,
+    date,
+    place,
+    isPrivate,
+    tags,
+    familyId,
+    gallery,
+  } = req.body;
 
   const familyObjectId = new ObjectId(familyId);
 
@@ -23,6 +58,7 @@ router.post("/memory", isAuthenticated, async (req, res) => {
     tags,
     family: familyObjectId,
     createdBy: userId,
+    gallery,
   };
   if (isPrivate) {
     memoryToCreate.owner = userId;
@@ -36,21 +72,6 @@ router.post("/memory", isAuthenticated, async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error.message });
     });
-});
-
-// POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
-router.post("/upload", fileUploader.single("images"), (req, res, next) => {
-  // console.log("file is: ", req.file)
-
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
-  }
-
-  // Get the URL of the uploaded file and send it as a response.
-  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
-
-  res.json({ fileUrl: req.file.path });
 });
 
 // POST /api/memories  -  Get all memories in the family collection
