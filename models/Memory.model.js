@@ -38,7 +38,7 @@ const memorySchema = new Schema(
       ref: "Family",
       required: true,
     },
-    images: [
+    gallery: [
       {
         type: String,
       },
