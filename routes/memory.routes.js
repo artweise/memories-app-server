@@ -7,11 +7,44 @@ const fileUploader = require("../config/cloudinary.config");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
+// POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+// router.post("/upload", fileUploader.single("gallery"), (req, res, next) => {
+//   if (!req.file) {
+//     next(new Error("No file uploaded!"));
+//     return;
+//   }
+//   // Get the URL of the uploaded file and send it as a response.
+//   // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+
+//   res.json({ fileUrl: req.file.path });
+// });
+
+// POST /api/upload => Route that receives IMAGES, sends it to Cloudinary via the fileUploader and returns the image URL
+router.post("/upload", fileUploader.array("gallery", 10), (req, res, next) => {
+  if (!req.files) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+  const fileUrls = req.files.map((file) => file.path);
+  // Get the URL of the uploaded file and send it as a response.
+  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+
+  res.json({ fileUrls });
+});
+
 //  POST /api/memory  -  Creates a new memory in the family collection
 router.post("/memory", isAuthenticated, async (req, res) => {
   const userId = req.payload._id;
-  const { title, publication, date, place, isPrivate, tags, familyId } =
-    req.body;
+  const {
+    title,
+    publication,
+    date,
+    place,
+    isPrivate,
+    tags,
+    familyId,
+    gallery,
+  } = req.body;
 
   const familyObjectId = new ObjectId(familyId);
 
@@ -23,6 +56,7 @@ router.post("/memory", isAuthenticated, async (req, res) => {
     tags,
     family: familyObjectId,
     createdBy: userId,
+    gallery,
   };
   if (isPrivate) {
     memoryToCreate.owner = userId;
@@ -36,21 +70,6 @@ router.post("/memory", isAuthenticated, async (req, res) => {
       console.log(error);
       res.status(500).json({ message: error.message });
     });
-});
-
-// POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
-router.post("/upload", fileUploader.single("images"), (req, res, next) => {
-  // console.log("file is: ", req.file)
-
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
-  }
-
-  // Get the URL of the uploaded file and send it as a response.
-  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
-
-  res.json({ fileUrl: req.file.path });
 });
 
 // POST /api/memories  -  Get all memories in the family collection
@@ -82,25 +101,36 @@ router.get("/memory/:memoryId", isAuthenticated, async (req, res) => {
 
 // POST /api/memory/:memoryId  -  Edit memory details
 router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
+  const userId = req.payload._id;
   const { memoryId } = req.params;
-  // const { data } = req.body;
-  const { title, publication, date, place, tags, familyId, userId } = req.body;
 
-  // if (!data) {
-  //   res.status(400).json({ message: "Missing data in request body" });
-  //   return;
-  // }
-  // const { publication, date, place, tags, family: familyId, userId } = data;
+  const { title, publication, date, place, isPrivate, tags, familyId } =
+    req.body;
+
+  const familyObjectId = new ObjectId(familyId);
+
+  const memoryData = {
+    title,
+    publication,
+    date: new Date(date),
+    place,
+    tags,
+    family: familyObjectId,
+    updatedBy: userId,
+    // When using findByIdAndUpdate in Mongoose, you can delete a key based on a condition by using the $unset operator in your update object.
+    $unset: {},
+  };
+  if (isPrivate) {
+    memoryData.owner = userId;
+  } else {
+    // If isPrivate is false, delete the 'owner' field from the document
+    memoryData.$unset.owner = "";
+  }
 
   try {
-    const updatedMemory = await Memory.findByIdAndUpdate(
-      memoryId,
-      { title, publication, date, place, tags, family: familyId, userId },
-      // data,
-      {
-        new: true,
-      }
-    );
+    const updatedMemory = await Memory.findByIdAndUpdate(memoryId, memoryData, {
+      new: true,
+    });
     res.status(200).json(updatedMemory);
   } catch (error) {
     console.log("Error occured while editing your memory: " + error);
