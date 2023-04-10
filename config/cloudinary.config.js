@@ -11,9 +11,10 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    allowed_formats: ["jpg", "png"],
-    folder: "memory-gallery", // The name of the folder in cloudinary
-    resource_type: "raw", // => this is in case you want to upload other types of files, not just images
+    allowed_formats: ["jpg", "png", "mp4", "m4a", "pdf"],
+    // format: async (req, file) => ["jpg", "png"], // supports promises as well,
+    folder: "memories-gallery", // The name of the folder in cloudinary
+    // resource_type: "raw", // => this is in case you want to upload other types of files, not just images
   },
 });
 
