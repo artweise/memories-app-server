@@ -25,14 +25,11 @@ router.post("/upload", fileUploader.array("gallery", 10), (req, res, next) => {
     next(new Error("No file uploaded!"));
     return;
   }
-  console.log("files are: ", req.files);
-
   const fileUrls = req.files.map((file) => file.path);
   // Get the URL of the uploaded file and send it as a response.
   // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
 
   res.json({ fileUrls });
-  console.log("fileUrls are: ", fileUrls);
 });
 
 //  POST /api/memory  -  Creates a new memory in the family collection
