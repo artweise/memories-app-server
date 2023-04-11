@@ -104,8 +104,16 @@ router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
   const userId = req.payload._id;
   const { memoryId } = req.params;
 
-  const { title, publication, date, place, isPrivate, tags, familyId } =
-    req.body;
+  const {
+    title,
+    publication,
+    date,
+    place,
+    isPrivate,
+    tags,
+    familyId,
+    gallery,
+  } = req.body;
 
   const familyObjectId = new ObjectId(familyId);
 
@@ -117,6 +125,7 @@ router.put("/memory/:memoryId", isAuthenticated, async (req, res) => {
     tags,
     family: familyObjectId,
     updatedBy: userId,
+    gallery,
     // When using findByIdAndUpdate in Mongoose, you can delete a key based on a condition by using the $unset operator in your update object.
     $unset: {},
   };
