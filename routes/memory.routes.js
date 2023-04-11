@@ -76,9 +76,11 @@ router.post("/memory", isAuthenticated, async (req, res) => {
 router.post("/memories", isAuthenticated, async (req, res) => {
   const { familyId } = req.body;
 
-  // Find all memories in the family collection
+  // Find all memories in the family collection  and sort in descending order by date
   try {
-    const memories = await Memory.find({ family: familyId }).populate("family");
+    const memories = await Memory.find({ family: familyId })
+      .populate("family")
+      .sort({ date: -1 });
     res.status(200).json(memories);
   } catch (error) {
     console.log(error);
