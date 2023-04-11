@@ -79,7 +79,9 @@ router.get("/families", isAuthenticated, async (req, res) => {
 // GET /api/families/:familyId -  Get single family
 router.get("/families/:familyId", isAuthenticated, async (req, res) => {
   try {
-    const singleFamily = await Family.findById(req.params.familyId);
+    const singleFamily = await Family.findById(req.params.familyId).populate(
+      "members"
+    );
     res.json(singleFamily);
   } catch (error) {
     (error) => console.log(error);
