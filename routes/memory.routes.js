@@ -83,7 +83,8 @@ router.post("/memories", isAuthenticated, async (req, res) => {
       .populate({
         path: "createdBy",
         select: "-password",
-      });
+      })
+      .sort({ date: -1 });
     res.status(200).json(memories);
   } catch (error) {
     console.log(error);
