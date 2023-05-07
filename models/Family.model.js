@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
 
 const familySchema = new Schema(
   {
@@ -35,4 +35,4 @@ const familySchema = new Schema(
 
 const Family = model("Family", familySchema);
 
-module.exports = Family;
+export default Family;
