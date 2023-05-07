@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
 
 const memorySchema = new Schema(
   {
@@ -51,4 +51,4 @@ const memorySchema = new Schema(
 
 const Memory = model("Memory", memorySchema);
 
-module.exports = Memory;
+export default Memory;

@@ -1,22 +1,22 @@
 // We reuse this import in order to have access to the `body` property in requests
-const express = require("express");
+import { json, urlencoded } from "express";
 
-// ℹ️ Responsible for the messages you see in the terminal as requests are coming in
+// Responsible for the messages you see in the terminal as requests are coming in
 // https://www.npmjs.com/package/morgan
-const logger = require("morgan");
+import logger from "morgan";
 
-// ℹ️ Needed when we deal with cookies (we will when dealing with authentication)
+// Needed when we deal with cookies (we will when dealing with authentication)
 // https://www.npmjs.com/package/cookie-parser
-const cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
 
-// ℹ️ Needed to accept requests from 'the outside'. CORS stands for cross origin resource sharing
+// Needed to accept requests from 'the outside'. CORS stands for cross origin resource sharing
 // unless the request is made from the same domain, by default express wont accept POST requests
-const cors = require("cors");
+import cors from "cors";
 
 const FRONTEND_URL = process.env.ORIGIN || "http://localhost:3000";
 
 // Middleware configuration
-module.exports = (app) => {
+export const middlewareConfig = (app) => {
   // Because this will be hosted on a server that will accept requests from outside and it will be
   // hosted on a server with a `proxy`, express needs to know that it should trust that setting.
   // Services like Fly use something called a proxy and you need to add this to your server
@@ -34,7 +34,9 @@ module.exports = (app) => {
   app.use(logger("dev"));
 
   // To have access to `body` property in the request
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  // The limit option sets the maximum size of the request body that can be parsed by the body-parser middleware
+  // So, if a request's body size exceeds 10 mb, the body-parser middleware will reject the request with a 413 "Payload Too Large"
+  app.use(json({ limit: "10mb" }));
+  app.use(urlencoded({ extended: true, limit: "10mb" }));
   app.use(cookieParser());
 };
