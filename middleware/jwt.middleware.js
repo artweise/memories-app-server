@@ -29,7 +29,3 @@ export const isAuthenticated = jwt({
     throw err;
   },
 });
-
-export default {
-  isAuthenticated,
-};

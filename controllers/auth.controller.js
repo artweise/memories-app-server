@@ -58,7 +58,7 @@ const createUser = async (req, res, next) => {
   }
 };
 
-export const loginUser = async (req, res, next) => {
+const loginUser = async (req, res, next) => {
   const { email, password } = req.body;
 
   // Check if email or password are not provided (empty strings)
