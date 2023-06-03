@@ -79,6 +79,22 @@ components:
           format: date-time
         __v:
           type: integer
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Unauthorized Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Invalid token
 paths:
   /api/memory/upload:
     post:
@@ -86,6 +102,8 @@ paths:
       tags:
         - Memories
       description: Upload multiple files to the Cloudinary storage
+      security:
+        - BearerAuth: []
       requestBody:
         content:
           multipart/form-data:
@@ -125,9 +143,13 @@ paths:
                   message:
                     type: string
                     example: No files attached
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /api/memory:
     post:
-      summary: Create a new memory
+      summary: Create new memory
+      security:
+        - BearerAuth: []
       tags:
         - Memories
       requestBody:
@@ -142,5 +164,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NewMemoryResponse'
-      security:
-        - bearerAuth: []
+        '400':
+          description: Error - Invalid date
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid date. The date must be in ISO 8601 format
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
