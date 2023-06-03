@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Family Memories API
+  version: 1.0.0
+servers:
+  - url: http://localhost:5005
+components:
+  schemas:
+    NewMemoryRequest:
+      type: object
+      required:
+        - date
+        - familyId
+      properties:
+        title:
+          type: string
+        publication:
+          type: string
+          description: The memory publication
+        date:
+          type: string
+          format: date
+          description: The memory date
+        place:
+          type: string
+        isPrivate:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        familyId:
+          type: string
+          description: The memory's family id
+        gallery:
+          type: array
+          items:
+            type: string
+    NewMemoryResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        publication:
+          type: string
+          description: The memory publication
+        date:
+          type: string
+          format: date-time
+          description: The memory date
+        place:
+          type: string
+          description: The memory location
+        tags:
+          type: array
+          items:
+            type: string
+          description: The memory tags
+        owner:
+          type: string
+          nullable: true
+        createdBy:
+          type: string
+        family:
+          type: string
+          description: The memory's family
+        gallery:
+          type: array
+          items:
+            type: string
+            format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+paths:
+  /api/memory/upload:
+    post:
+      summary: Upload files
+      tags:
+        - Memories
+      description: Upload multiple files to the Cloudinary storage
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                gallery:
+                  type: array
+                  maxItems: 10
+                  items:
+                    type: string
+                    format: binary
+                  description: |
+                    The files to be uploaded.
+                    Allowed formats: ["jpg", "png", "mp4", "m4a", "pdf"].
+                    Maximum file count: 10.
+                    Maximum payload size: 5MB.
+      responses:
+        '200':
+          description: File URLs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  fileUrls:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          description: Error - No files attached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No files attached
+  /api/memory:
+    post:
+      summary: Create a new memory
+      tags:
+        - Memories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMemoryRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewMemoryResponse'
+      security:
+        - bearerAuth: []
