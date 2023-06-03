@@ -15,7 +15,7 @@ export const errorHandler = (app) => {
 
     // only render if the error ocurred before sending the response
     if (!res.headersSent) {
-      res.status(400).json({
+      res.status(500).json({
         message: err.message,
       });
     }

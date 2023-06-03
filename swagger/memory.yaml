@@ -37,6 +37,58 @@ components:
           items:
             type: string
     NewMemoryResponse:
+      allOf:
+        - $ref: '#/components/schemas/MemoryBase'
+        - type: object
+          properties:
+            createdBy:
+              type: string
+            family:
+              type: string
+              description: The memory's family id
+    MemoriesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/Memory'
+    Memory:
+      allOf:
+        - $ref: '#/components/schemas/MemoryBase'
+        - type: object
+          properties:
+            createdBy:
+              $ref: '#/components/schemas/User'
+            family:
+              $ref: '#/components/schemas/Family'
+    Family:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        color:
+          type: string
+        members:
+          type: array
+          items:
+            type: string
+            description: The ID of family's member
+        tags:
+          type: array
+          items:
+            type: string
+          description: The family's tags
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+    MemoryBase:
       type: object
       properties:
         _id:
@@ -50,6 +102,9 @@ components:
           type: string
           format: date-time
           description: The memory date
+        owner:
+          type: string
+          nullable: true
         place:
           type: string
           description: The memory location
@@ -58,19 +113,30 @@ components:
           items:
             type: string
           description: The memory tags
-        owner:
-          type: string
-          nullable: true
-        createdBy:
-          type: string
-        family:
-          type: string
-          description: The memory's family
         gallery:
           type: array
           items:
             type: string
             format: uri
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
         createdAt:
           type: string
           format: date-time
@@ -95,6 +161,16 @@ components:
               message:
                 type: string
                 example: Invalid token
+    UncaughtError:
+      description: Uncaught Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Error message
 paths:
   /api/memory/upload:
     post:
@@ -145,6 +221,8 @@ paths:
                     example: No files attached
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/UncaughtError'
   /api/memory:
     post:
       summary: Create new memory
@@ -176,3 +254,30 @@ paths:
                     example: Invalid date. The date must be in ISO 8601 format
         '401':
           $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/UncaughtError'
+  /api/memories/{familyId}:
+    get:
+      summary: Get all memories by family id
+      tags:
+        - Memories
+      parameters:
+        - in: path
+          name: familyId
+          schema:
+            type: string
+          required: true
+          description: The ID of the family
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemoriesResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/UncaughtError'
