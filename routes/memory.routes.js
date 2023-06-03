@@ -1,8 +1,8 @@
-import express from "express";
+import express from 'express';
 
-import fileUploader from "../config/cloudinary.config.js";
-import { isAuthenticated } from "../middleware/jwt.middleware.js";
-import { memoryController } from "../controllers/memory.controller.js";
+import fileUploader from '../config/cloudinary.config.js';
+import { isAuthenticated } from '../middleware/jwt.middleware.js';
+import { memoryController } from '../controllers/memory.controller.js';
 
 const memoryRoutes = express.Router();
 
@@ -19,21 +19,21 @@ const memoryRoutes = express.Router();
 // });
 
 // POST /api/upload => Route that receives IMAGES, sends it to Cloudinary via the fileUploader and returns the image URL
-memoryRoutes.post("/upload", fileUploader.array("gallery", 10), memoryController.uploadFiles);
+memoryRoutes.post('/upload', fileUploader.array('gallery', 10), memoryController.uploadFiles);
 
 //  POST /api/memory  -  Creates a new memory in the family collection
-memoryRoutes.post("/memory", isAuthenticated, memoryController.createNewMemory);
+memoryRoutes.post('/memory', isAuthenticated, memoryController.createNewMemory);
 
 // GET /api/memories  -  Get all memories in the family collection
-memoryRoutes.get("/memories/:familyId", isAuthenticated, memoryController.getMemoriesByFamilyId);
+memoryRoutes.get('/memories/:familyId', isAuthenticated, memoryController.getMemoriesByFamilyId);
 
 // GET /api/memory/:memoryId  -  Get one memory in the family collection
-memoryRoutes.get("/memory/:memoryId", isAuthenticated, memoryController.getMemoryById);
+memoryRoutes.get('/memory/:memoryId', isAuthenticated, memoryController.getMemoryById);
 
 // PUT /api/memory/:memoryId  -  Edit memory details
-memoryRoutes.put("/memory/:memoryId", isAuthenticated, memoryController.editMemory);
+memoryRoutes.put('/memory/:memoryId', isAuthenticated, memoryController.editMemory);
 
 // DELETE /api/memory/:memoryId  -  Delete memory
-memoryRoutes.delete("/memory/:memoryId", isAuthenticated, memoryController.deleteMemory);
+memoryRoutes.delete('/memory/:memoryId', isAuthenticated, memoryController.deleteMemory);
 
 export default memoryRoutes;
