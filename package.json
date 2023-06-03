@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "lint": "eslint .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -22,6 +24,8 @@
     "multer-storage-cloudinary": "^4.0.0"
   },
   "devDependencies": {
+    "eslint": "^8.42.0",
+    "husky": "^8.0.3",
     "nodemon": "^2.0.21"
   }
 }

@@ -1,6 +1,6 @@
-import { ObjectId } from "mongodb";
+import { ObjectId } from 'mongodb';
 
-import { memoryHandler } from "../handlers/memory.handler.js";
+import { memoryHandler } from '../handlers/memory.handler.js';
 
 // POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
 // router.post("/upload", fileUploader.single("gallery"), (req, res, next) => {
@@ -14,9 +14,9 @@ import { memoryHandler } from "../handlers/memory.handler.js";
 //   res.json({ fileUrl: req.file.path });
 // });
 
-const uploadFiles = async (req, res, next) => {
+const uploadFiles = async (req, res) => {
   if (!req.files) {
-    res.status(400).json({ message: "No files attached" });
+    res.status(400).json({ message: 'No files attached' });
   }
   const fileUrls = req.files.map((file) => file.path);
   // Get the URL of the uploaded file and send it as a response.
@@ -97,7 +97,7 @@ const editMemory = async (req, res, next) => {
     memoryData.owner = userId;
   } else {
     // If isPrivate is false, delete the 'owner' field from the document
-    memoryData.$unset.owner = "";
+    memoryData.$unset.owner = '';
   }
   try {
     const updatedMemory = await memoryHandler.editMemoryById(memoryId, memoryData);
@@ -112,9 +112,9 @@ const deleteMemory = async (req, res, next) => {
   const { memoryId } = req.params;
   try {
     await memoryHandler.deleteMemoryById(memoryId);
-    res.status(200).json({ message: "Memory was deleted successfully" });
+    res.status(200).json({ message: 'Memory was deleted successfully' });
   } catch (error) {
-    console.log("Error while deleting a memory");
+    console.log('Error while deleting a memory');
     // In this case, we send error handling to the error handling middleware.
     next(error);
   }

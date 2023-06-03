@@ -45,7 +45,7 @@ const createUser = async (req, res, next) => {
 
     // Deconstruct the newly created user object to omit the password
     // We should never expose passwords publicly
-    const { password: createdUserPassword, __v, ...user } = createdUser;
+    const { password: createdUserPassword, __v, ...user } = createdUser; // eslint-disable-line no-unused-vars
 
     // Send a json response containing the user object
     res.status(201).json(user);
@@ -103,7 +103,7 @@ const loginUser = async (req, res, next) => {
 
 const verifyToken = async (req, res) => {
   // If JWT token is valid the payload gets decoded by the isAuthenticated middleware and now is available on `req.payload`
-  console.log(`req.payload`, req.payload);
+  console.log('req.payload', req.payload);
 
   // Send back the token payload object containing the user data
   res.status(200).json(req.payload);
