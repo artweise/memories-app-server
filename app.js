@@ -1,6 +1,10 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import fs from 'fs';
+import YAML from 'yaml';
 
 import { middlewareConfig } from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -13,7 +17,7 @@ import memoryRoutes from './routes/memory.routes.js';
 // https://www.npmjs.com/package/dotenv
 config();
 
-// --- DB ---
+// ℹ️ --- DB ---
 // Connects to the database
 // package responsible to make the connection with mongodb
 // https://www.npmjs.com/package/mongoose
@@ -33,20 +37,46 @@ mongoose
     console.error('Error connecting to mongo: ', err);
   });
 
-// Handles http requests (express is node js framework)
+// ℹ️ --- Swagger docs ---
+
+// Load the Swagger specifications from the YAML files
+const memorySpec = YAML.parse(fs.readFileSync('./swagger/memory.yaml', 'utf8'));
+const testSpec = YAML.parse(fs.readFileSync('./swagger/test.yaml', 'utf8'));
+
+// Combine the specifications
+const combinedSpec = {
+  ...memorySpec,
+  ...testSpec,
+  paths: {
+    ...memorySpec.paths,
+    ...testSpec.paths,
+  },
+  // Add more specifications if needed
+};
+
+// Swagger options
+const options = {
+  swaggerDefinition: combinedSpec,
+  apis: ['./routes/*.js'], // Add your API files here
+};
+
+// Initialize swagger-jsdoc
+const swaggerSpecs = swaggerJsdoc(options);
+
+// ℹ️ Handles http requests (express is node js framework)
 // https://www.npmjs.com/package/express
 const app = express();
 
-// This function is getting exported from the config folder. It runs most pieces of middleware
+// ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
 // (logger, body-parser etc)
 middlewareConfig(app);
 
-// --- ROUTES ---
-
+// ℹ️ --- ROUTES ---
 app.use('/api', indexRoutes);
 app.use('/auth', authRoutes);
 app.use('/api', familyRoutes);
 app.use('/api', memoryRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 errorHandler(app);

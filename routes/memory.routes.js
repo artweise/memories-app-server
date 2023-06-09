@@ -19,7 +19,12 @@ const memoryRoutes = express.Router();
 // });
 
 // POST /api/upload => Route that receives IMAGES, sends it to Cloudinary via the fileUploader and returns the image URL
-memoryRoutes.post('/upload', fileUploader.array('gallery', 10), memoryController.uploadFiles);
+memoryRoutes.post(
+  '/upload',
+  isAuthenticated,
+  fileUploader.array('gallery', 10),
+  memoryController.uploadFiles
+);
 
 //  POST /api/memory  -  Creates a new memory in the family collection
 memoryRoutes.post('/memory', isAuthenticated, memoryController.createNewMemory);

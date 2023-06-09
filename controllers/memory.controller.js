@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 import { memoryHandler } from '../handlers/memory.handler.js';
+import { ISODateRegex } from '../utils/date.utils.js';
 
 // POST /api/upload => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
 // router.post("/upload", fileUploader.single("gallery"), (req, res, next) => {
@@ -27,6 +28,12 @@ const uploadFiles = async (req, res) => {
 const createNewMemory = async (req, res, next) => {
   const userId = req.payload._id;
   const { title, publication, date, place, isPrivate, tags, familyId, gallery } = req.body;
+
+  const isValidDate = ISODateRegex.test(date);
+
+  if (!isValidDate) {
+    res.status(400).json({ message: 'Invalid date. The date must be in ISO 8601 format' });
+  }
 
   const familyObjectId = new ObjectId(familyId);
   const memoryToCreate = {

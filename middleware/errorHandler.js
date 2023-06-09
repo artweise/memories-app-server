@@ -11,7 +11,7 @@ export const errorHandler = (app) => {
 
     // expired token
     if (err.name === 'UnauthorizedError' && !res.headersSent) {
-      res.status(401).json({ message: 'Invalid token...' });
+      res.status(401).json({ message: 'Invalid token' });
     }
 
     // only render if the error ocurred before sending the response
