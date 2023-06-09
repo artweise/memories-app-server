@@ -2,7 +2,7 @@ import { genSaltSync, hashSync, compareSync } from 'bcrypt'; // Handles password
 import jwt from 'jsonwebtoken'; // Handles password encryption
 
 import { userHandler } from '../handlers/user.handler.js'; // Import the User handler in order to interact with the database
-import { validEmailPattern, validPasswordPattern } from '../utilities/auth.utilities.js';
+import { validEmailPattern, validPasswordPattern } from '../utils/auth.utils.js';
 
 const createUser = async (req, res, next) => {
   const { email, password, username } = req.body;
