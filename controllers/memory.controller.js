@@ -15,7 +15,7 @@ import { ISODateRegex } from '../utils/date.utils.js';
 //   res.json({ fileUrl: req.file.path });
 // });
 
-const uploadFiles = async (req, res, next) => {
+const uploadFiles = async (req, res) => {
   if (!req.files) {
     res.status(400).json({ message: 'No files attached' });
   }
