@@ -13,6 +13,10 @@ import cookieParser from 'cookie-parser';
 // unless the request is made from the same domain, by default express wont accept POST requests
 import cors from 'cors';
 
+// Express middleware which sanitizes user-supplied data to prevent MongoDB Operator Injection.
+// Add as a piece of express middleware, before defining your routes.
+import mongoSanitize from 'express-mongo-sanitize';
+
 const FRONTEND_URL = process.env.ORIGIN || 'http://localhost:3000';
 
 // Middleware configuration
@@ -32,6 +36,17 @@ export const middlewareConfig = (app) => {
 
   // In development environment the app logs
   app.use(logger('dev'));
+
+  // Sanitization
+  // onSanitize callback is called after the request's value was sanitized
+  app.use(
+    mongoSanitize({
+      dryRun: true,
+      onSanitize: ({ req, key }) => {
+        console.warn(`[DryRun] On this request ${key} will be sanitized`, req[key]);
+      },
+    })
+  );
 
   // To have access to `body` property in the request
   // The limit option sets the maximum size of the request body that can be parsed by the body-parser middleware
