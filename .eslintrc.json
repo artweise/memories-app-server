@@ -9,7 +9,9 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "plugins": ["import"],
   "rules": {
+    "import/no-commonjs": "error",
     "indent": ["error", 2],
     "quotes": ["error", "single"],
     "linebreak-style": ["error", "unix"],
