@@ -26,7 +26,7 @@ const uploadFiles = async (req, res) => {
 };
 
 const createNewMemory = async (req, res, next) => {
-  const userId = req.payload._id;
+  const { userId } = req.payload;
   const { title, publication, date, place, isPrivate, tags, familyId, gallery } = req.body;
 
   const isValidDate = ISODateRegex.test(date);
@@ -81,7 +81,7 @@ const getMemoryById = async (req, res, next) => {
 };
 
 const editMemory = async (req, res, next) => {
-  const userId = req.payload._id;
+  const { userId } = req.payload;
   const { memoryId } = req.params;
 
   const { title, publication, date, place, isPrivate, tags, familyId, gallery } = req.body;

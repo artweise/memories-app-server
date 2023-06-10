@@ -49,7 +49,7 @@ const createNewFamily = async (req, res, next) => {
 };
 
 const getUserFamilies = async (req, res, next) => {
-  const userId = req.payload._id;
+  const { userId } = req.payload;
   try {
     const allFamilies = await familyHandler.getUserFamilies(userId);
     res.json(allFamilies);

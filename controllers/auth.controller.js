@@ -76,7 +76,7 @@ const loginUser = async (req, res, next) => {
       const { _id, email, username } = foundUser;
 
       // Create an object that will be set as the token payload
-      const payload = { _id, email, username };
+      const payload = { userId: _id, email, username };
 
       // Create a JSON Web Token and sign it
       const accessToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -87,7 +87,7 @@ const loginUser = async (req, res, next) => {
       // Send the token as the response
       res.status(200).json({
         accessToken,
-        _id,
+        userId: _id,
         email,
         username,
         message: 'Logged in successfully',
