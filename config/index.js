@@ -25,8 +25,9 @@ export const middlewareConfig = (app) => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     cors({
-      credentials: true,
-      origin: [FRONTEND_URL, 'http://localhost:3000'],
+      credentials: true, // If you need to send cookies or auth headers
+      methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+      origin: [FRONTEND_URL, 'https://familymemories.netlify.app', 'http://localhost:3000'],
     })
   );
 
