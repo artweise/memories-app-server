@@ -1,22 +1,22 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const collectionSchema = new Schema(
   {
     title: {
       type: String,
       trim: true,
-      required: [true, "Give a title of your collection"],
+      required: [true, 'Give a title of your collection'],
       unique: true,
     },
     family: {
       type: Schema.Types.ObjectId,
-      ref: "Family",
+      ref: 'Family',
       required: true,
     },
     memories: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Memory",
+        ref: 'Memory',
       },
     ],
   },
@@ -25,6 +25,7 @@ const collectionSchema = new Schema(
   }
 );
 
-const Collection = model("Collection", collectionSchema);
+const Collection = model('Collection', collectionSchema);
+// test
 
 export default Collection;
