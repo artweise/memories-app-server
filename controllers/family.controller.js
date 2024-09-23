@@ -1,5 +1,5 @@
-import { familyHandler } from "../handlers/family.handler.js";
-import { userHandler } from "../handlers/user.handler.js";
+import { familyHandler } from '../handlers/family.handler.js';
+import { userHandler } from '../handlers/user.handler.js';
 
 const createNewFamily = async (req, res, next) => {
   let { title, description, members } = req.body;
@@ -8,15 +8,20 @@ const createNewFamily = async (req, res, next) => {
   // Check if the required fields are provided
   if (!title) {
     return res.status(400).json({
-      message: "Please provide the title of the family.",
+      message: 'Please provide the title of the family.',
     });
   }
-  // Check if the members array exists
-  if (!members) {
+  // Check if the members array exists and remove duplicates if there are any
+  if (members) {
+    members = Array.from([...new Set(members)]);
+  } else {
     members = [];
   }
-  // Add the current user email to the members array
-  members.push(email);
+
+  // Add the current user email to the members array if it was not added by the user
+  if (!members.includes(email)) {
+    members.push(email);
+  }
   try {
     // Find all the user IDs for the members in the members array
     const memberIds = await Promise.all(

@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "pre-commit": "gitleaks protect --staged -v && npm run lint"
+  }
+}

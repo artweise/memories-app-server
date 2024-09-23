@@ -1,11 +1,11 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const familySchema = new Schema(
   {
     title: {
       type: String,
       trim: true,
-      required: [true, "Give a title of your family"],
+      required: [true, 'Give a title of your family'],
     },
     description: {
       type: String,
@@ -13,12 +13,12 @@ const familySchema = new Schema(
     },
     color: {
       type: String,
-      default: "#7DCBAA",
+      default: '#7DCBAA',
     },
     members: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
     // tags should be unique, but the validation should be in the create moment
@@ -33,6 +33,6 @@ const familySchema = new Schema(
   }
 );
 
-const Family = model("Family", familySchema);
+const Family = model('Family', familySchema);
 
 export default Family;

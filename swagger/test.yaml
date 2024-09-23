@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: Family Memories API
+  version: 1.0.0
+servers:
+  - url: http://localhost:5005
+paths:
+  /api/test:
+    get:
+      summary: Test
+      tags:
+        - Test
+      description: Test
+      responses:
+        '200':
+          description: Test
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  test:
+                    type: string

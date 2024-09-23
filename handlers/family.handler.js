@@ -1,4 +1,4 @@
-import Family from "../models/Family.model.js";
+import Family from '../models/Family.model.js';
 
 const createFamily = ({ title, description, members }) => {
   return Family.create({
@@ -11,11 +11,11 @@ const createFamily = ({ title, description, members }) => {
 const getUserFamilies = (userId) => {
   return Family.find({
     members: { $in: [userId] },
-  }).populate("members");
+  }).populate('members');
 };
 
 const getFamilyById = (familyId) => {
-  return Family.findById(familyId).populate("members");
+  return Family.findById(familyId).populate('members');
 };
 
 export const familyHandler = {

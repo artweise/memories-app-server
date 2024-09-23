@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const memorySchema = new Schema(
   {
@@ -23,19 +23,19 @@ const memorySchema = new Schema(
     ],
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     updatedBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     family: {
       type: Schema.Types.ObjectId,
-      ref: "Family",
+      ref: 'Family',
       required: true,
     },
     gallery: [
@@ -49,6 +49,6 @@ const memorySchema = new Schema(
   }
 );
 
-const Memory = model("Memory", memorySchema);
+const Memory = model('Memory', memorySchema);
 
 export default Memory;
